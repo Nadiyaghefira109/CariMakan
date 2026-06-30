@@ -119,5 +119,4 @@ app.get('/api/foods/:id', async (req, res) => {
     }
 });
 
-// ─── Export untuk Vercel ─────────────────────────────────────────────────────
-export default app;
+module.exports = app;
