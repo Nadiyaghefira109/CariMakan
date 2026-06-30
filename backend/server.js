@@ -95,7 +95,8 @@ const translateIngredients = async (meal) => {
 app.get('/api/foods/search', async (req, res) => {
   try {
     const query = req.query.q || '';
-    const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
+    // Gunakan URL backend yang sebenarnya, bukan localhost
+const response = await axios.get(`https://cari-makan-backend.vercel.app/api/foods/${id}`);
     res.json(response.data);
   } catch (error) {
     console.error('Error fetching foods:', error.message);
