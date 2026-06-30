@@ -13,9 +13,10 @@ const app = express();
 // ─── Middleware CORS ────────────────────────────────────────────────────────────
 // Pastikan domain frontend kamu sesuai dengan URL di Vercel
 app.use(cors({
-  origin: "https://cari-makan-frontend2.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"] 
+  origin: function (origin, callback) {
+    // Mengizinkan semua request (termasuk dari browser saat pengembangan lokal)
+    callback(null, true);
+  }
 }));
 
 // ─── Middleware JSON ────────────────────────────────────────────────────────────
