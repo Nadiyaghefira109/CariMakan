@@ -9,6 +9,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ─── Route Root ─────────────────────────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.send("Backend CariMakan aktif 🚀");
+});
+
 // ─── Terjemahan ─────────────────────────────────────────────────────────────
 const splitIntoChunks = (text, maxLen = 450) => {
     const sentences = text.match(/[^.!?\r\n]+[.!?\r\n]*/g) || [text];
