@@ -10,23 +10,25 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchFoods = async (searchQuery = '') => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.get(`http://localhost:5000/api/foods/search?q=${searchQuery}`);
-            if (response.data.meals) {
-                setFoods(response.data.meals);
-            } else {
-                setFoods([]);
-            }
-        } catch (err) {
-            setError('Gagal memuat data makanan. Pastikan server backend berjalan.');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const API_URL = import.meta.env.VITE_API_URL;
+
+const fetchFoods = async (searchQuery = '') => {
+  setLoading(true);
+  setError(null);
+  try {
+    const response = await axios.get(`${API_URL}/api/foods/search?q=${searchQuery}`);
+    if (response.data.meals) {
+      setFoods(response.data.meals);
+    } else {
+      setFoods([]);
+    }
+  } catch (err) {
+    setError('Gagal memuat data makanan. Pastikan server backend berjalan.');
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
     useEffect(() => {
         fetchFoods();

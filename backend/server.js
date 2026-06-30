@@ -6,13 +6,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-
 app.use(cors());
 app.use(express.json());
 
 // ─── Terjemahan ─────────────────────────────────────────────────────────────
-// Memecah teks panjang menjadi chunks ≤ 450 karakter (batas MyMemory API)
 const splitIntoChunks = (text, maxLen = 450) => {
     const sentences = text.match(/[^.!?\r\n]+[.!?\r\n]*/g) || [text];
     const chunks = [];
@@ -21,7 +18,6 @@ const splitIntoChunks = (text, maxLen = 450) => {
     for (const sentence of sentences) {
         if ((current + sentence).length > maxLen) {
             if (current) chunks.push(current.trim());
-            // Jika satu kalimat > maxLen, potong paksa
             if (sentence.length > maxLen) {
                 for (let i = 0; i < sentence.length; i += maxLen) {
                     chunks.push(sentence.slice(i, i + maxLen).trim());
@@ -38,7 +34,6 @@ const splitIntoChunks = (text, maxLen = 450) => {
     return chunks;
 };
 
-// Terjemahkan satu chunk teks EN → ID via MyMemory
 const translateChunk = async (text) => {
     try {
         const res = await axios.get('https://api.mymemory.translated.net/get', {
@@ -46,17 +41,15 @@ const translateChunk = async (text) => {
             timeout: 8000
         });
         const translated = res.data?.responseData?.translatedText;
-        // Jika terjemahan gagal atau mengembalikan error, gunakan teks asli
         if (!translated || translated.toUpperCase().includes('MYMEMORY WARNING')) {
             return text;
         }
         return translated;
     } catch {
-        return text; // fallback ke teks asli
+        return text;
     }
 };
 
-// Terjemahkan teks panjang dengan memecahnya terlebih dahulu
 const translateText = async (text) => {
     if (!text) return text;
     const chunks = splitIntoChunks(text);
@@ -64,7 +57,6 @@ const translateText = async (text) => {
     return translated.join(' ');
 };
 
-// ─── Terjemahkan nama bahan ──────────────────────────────────────────────────
 const translateIngredients = async (meal) => {
     const translatedMeal = { ...meal };
     const ingredientPromises = [];
@@ -82,8 +74,6 @@ const translateIngredients = async (meal) => {
 };
 
 // ─── Endpoints ───────────────────────────────────────────────────────────────
-
-// Cari makanan (tanpa terjemahan, cukup cepat)
 app.get('/api/foods/search', async (req, res) => {
     try {
         const query = req.query.q || '';
@@ -95,7 +85,6 @@ app.get('/api/foods/search', async (req, res) => {
     }
 });
 
-// Detail makanan — dengan terjemahan instruksi & bahan ke Bahasa Indonesia
 app.get('/api/foods/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -106,17 +95,14 @@ app.get('/api/foods/:id', async (req, res) => {
         }
 
         const meal = response.data.meals[0];
-
         console.log(`Menerjemahkan resep: ${meal.strMeal}...`);
 
-        // Jalankan terjemahan instruksi dan bahan secara bersamaan
         const [translatedInstructions, translatedMeal] = await Promise.all([
             translateText(meal.strInstructions),
             translateIngredients(meal)
         ]);
 
         translatedMeal.strInstructions = translatedInstructions;
-
         res.json({ meals: [translatedMeal] });
     } catch (error) {
         console.error('Error fetching food detail:', error.message);
@@ -124,7 +110,5 @@ app.get('/api/foods/:id', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server berjalan di port ${PORT}`);
-    console.log(`Terjemahan otomatis EN → ID aktif`);
-});
+// ─── Export untuk Vercel ─────────────────────────────────────────────────────
+export default app;
