@@ -6,7 +6,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "https://cari-makan-frontend.vercel.app/", // atau bisa diganti dengan domain frontend kamu // atau bisa diganti dengan domain frontend kamu
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 // ─── Route Root ─────────────────────────────────────────────────────────────
