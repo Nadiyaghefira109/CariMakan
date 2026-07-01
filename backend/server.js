@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const app = express();
 
 // ─── Konfigurasi Environment ────────────────────────────────────────────────────
 dotenv.config();
@@ -13,10 +14,9 @@ const app = express();
 // ─── Middleware CORS ────────────────────────────────────────────────────────────
 // Pastikan domain frontend kamu sesuai dengan URL di Vercel
 app.use(cors({
-  origin: function (origin, callback) {
-    // Mengizinkan semua request (termasuk dari browser saat pengembangan lokal)
-    callback(null, true);
-  }
+  origin: 'https://cari-makan-frontend.vercel.app', // Ganti dengan URL frontend Anda yang benar
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
 // ─── Middleware JSON ────────────────────────────────────────────────────────────
