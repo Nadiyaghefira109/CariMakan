@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { ShoppingBag, MapPin, Tag } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 
 // 🔹 Terjemahan kategori makanan
 const categoryTranslations = {
@@ -57,10 +58,21 @@ const areaTranslations = {
 
 // 🔹 Komponen utama
 const FoodCard = ({ food }) => {
+  // --- LETAKKAN DI SINI (Sebelum menghitung harga) ---
+  console.log("Isi objek food yang diterima:", food); 
+  
+  if (!food.idMeal) {
+      console.error("PERINGATAN: idMeal tidak ditemukan pada objek ini!", food);
+  }
+  // ----------------------------------------------------
+
   const { addToCart } = useCart();
 
   // Hitung harga dummy berdasarkan ID
   const priceId = parseInt(food.idMeal || "0");
+  // ... (lanjutkan sisa kode Anda)
+
+
   const dummyPrice = 15000 + ((priceId % 35) * 1000);
   const formattedPrice = new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -71,6 +83,8 @@ const FoodCard = ({ food }) => {
   // Ambil terjemahan kategori dan asal
   const categoryID = categoryTranslations[food.strCategory] || food.strCategory || "Umum";
   const areaID = areaTranslations[food.strArea] || food.strArea || "Tidak diketahui";
+
+  
 
   return (
     <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-slate-100 flex flex-col h-full">

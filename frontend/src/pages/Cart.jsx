@@ -179,12 +179,19 @@ const Cart = () => {
       {/* Tombol Pesan Sekarang */}
       <div className="mt-8">
         <button
-          onClick={() => navigate(`/karcis/${Date.now()}`)}   // 🔹 ubah jadi navigasi ke halaman karcis
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-4 rounded-2xl font-bold text-base hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg active:scale-95"
-        >
-          <ShoppingBag size={20} />
-          Pesan Sekarang
-        </button>
+ onClick={() =>
+  navigate(`/karcis/${Date.now()}`, {
+    state: {
+      cart,
+      total: totalHarga,
+    },
+  })
+}
+  className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-4 rounded-2xl font-bold text-base hover:bg-blue-700"
+>
+  <ShoppingBag size={20} />
+  Pesan Sekarang
+</button>
       </div>
     </div>
   );
